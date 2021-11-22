@@ -13,7 +13,7 @@ import (
 )
 
 const usage = `
-Performs simple HTTP requests and gathers stats while providing an API as close
+Performs (multiple) HTTP requests and gathers stats while providing an API as close
 to cURL as possible.
 
 Usage:
