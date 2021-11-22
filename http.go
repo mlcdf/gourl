@@ -126,6 +126,10 @@ func request(req *http.Request, rt http.RoundTripper) (*http.Response, *Trace, e
 
 func cloneRequest(req *http.Request) (*http.Request, error) {
 	clone := req.Clone(req.Context())
+	if req.Body == nil || req.Body == http.NoBody {
+		return clone, nil
+	}
+
 	var err error
 	clone.Body, err = req.GetBody()
 	if err != nil {
