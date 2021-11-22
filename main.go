@@ -35,6 +35,8 @@ Examples:
     gourl https://httpbin.org -H "Authorization: ${token}"
 `
 
+// Version is set at build time using -ldflags="-X 'main.Version=v1.0.0'
+var Version = "devel"
 var isVerbose bool
 
 type headerFlag struct {
@@ -98,7 +100,16 @@ func main() {
 	flag.BoolVar(&isVerbose, "verbose", isVerbose, "Verbose terminal output")
 	flag.BoolVar(&isVerbose, "v", isVerbose, "Verbose terminal output")
 
+	var versionFlag bool
+	flag.BoolVar(&versionFlag, "version", versionFlag, "print the version")
+	flag.BoolVar(&versionFlag, "V", versionFlag, "print the version")
+
 	flag.Parse()
+
+	if versionFlag {
+		fmt.Printf("gourl (%s)\n", Version)
+		return
+	}
 
 	var url string
 	if url = flag.Arg(0); url == "" {
