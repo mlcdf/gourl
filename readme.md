@@ -8,7 +8,8 @@
 ## Usage
 
 ```
-Performs simple HTTP requests and gathers stats while providing an API as close to cURL as possible.
+Performs simple HTTP requests and gathers stats while providing an API as close
+to cURL as possible.
 
 Usage:
     gourl [options...] <url>
