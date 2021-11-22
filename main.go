@@ -164,6 +164,5 @@ func run(req *http.Request, roundTripper http.RoundTripper, reporter Reporter, i
 			time.Sleep(time.Second * time.Duration(interval))
 		}
 	}()
-	sig := <-cancelChan
-	log.Printf("Caught SIGTERM/SIGINT %v", sig)
+	<-cancelChan
 }
