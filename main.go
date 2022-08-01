@@ -48,7 +48,7 @@ func (f headerFlag) String() string {
 }
 
 func (f headerFlag) Set(value string) error {
-	splitted := strings.Split(value, ":")
+	splitted := strings.SplitN(value, ":", 2)
 	f.Header[splitted[0]] = []string{strings.TrimSpace(splitted[1])}
 	return nil
 }
@@ -104,7 +104,7 @@ func main() {
 	flag.BoolVar(&versionFlag, "version", versionFlag, "print the version")
 	flag.BoolVar(&versionFlag, "V", versionFlag, "print the version")
 
-	flag.Parse()
+	flag.CommandLine.Parse(os.Args[firstArgWithDash(os.Args):])
 
 	if versionFlag {
 		fmt.Printf("gourl (%s)\n", Version)
@@ -112,8 +112,10 @@ func main() {
 	}
 
 	var url string
-	if url = flag.Arg(0); url == "" {
-		log.Fatalln("Missing positional parameter 'url'")
+	if !strings.HasPrefix(os.Args[1], "-") {
+		url = os.Args[1]
+	} else {
+		url = flag.Arg(0)
 	}
 
 	roundTripper := newRoundTripper(noConnectionReuse)
@@ -176,4 +178,21 @@ func run(req *http.Request, roundTripper http.RoundTripper, reporter Reporter, i
 		}
 	}()
 	<-cancelChan
+}
+
+// If a commandline app works like this: ./app subcommand -flag -flag2
+// `flag.Parse` won't parse anything after `subcommand`.
+// To still be able to use `flag.String/flag.Int64` etc without creating
+// a new `flag.FlagSet`, we need this hack to find the first arg that has a dash
+// so we know when to start parsing
+func firstArgWithDash(args []string) int {
+	index := 1
+	for i := 1; i < len(args); i++ {
+		index = i
+
+		if len(args[i]) > 0 && args[i][0] == '-' {
+			break
+		}
+	}
+	return index
 }
