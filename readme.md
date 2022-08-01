@@ -33,5 +33,4 @@ Examples:
 ## To do
 - better error handling
 - tests
-- export data as csv
-- Fancy colored terminal output
+- fancy colored terminal output
